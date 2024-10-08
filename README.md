@@ -72,7 +72,7 @@ Contributions to improve the PDF Comparison Tool are welcome. Please feel free t
 
 This app is also available on streamlit public cloud at https://pdfcomparison.streamlit.app/
 
-![alt text](image.png)
+![StreamlitApp](docs\images\image.png)
 
 ## Contact
 
