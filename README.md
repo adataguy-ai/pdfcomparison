@@ -68,6 +68,12 @@ The Streamlit app provides a user-friendly interface for this process and allows
 
 Contributions to improve the PDF Comparison Tool are welcome. Please feel free to submit issues or pull requests.
 
+## Hosted app
+
+This app is also available on streamlit public cloud at https://pdfcomparison.streamlit.app/
+
+![alt text](image.png)
+
 ## Contact
 
 Saurabh Tripathi
