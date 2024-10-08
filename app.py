@@ -1,12 +1,12 @@
 import streamlit as st
 import tempfile
 import os
-from pdf_compare import PDFComparer
 import base64
+from pdf_compare import EnhancedPDFComparer
 
 
 def main():
-    st.title("PDF Comparison Tool")
+    st.title("Enhanced PDF Comparison Tool")
 
     # Initialize session state
     if "comparison_done" not in st.session_state:
@@ -89,12 +89,8 @@ def compare_pdfs(original_pdf, modified_pdf):
         output_path, summary_path = tmp_output.name, tmp_summary.name
 
     # Perform comparison
-    comparer = PDFComparer()
-    original_blocks = comparer.extract_text_blocks(tmp1_path)
-    modified_blocks = comparer.extract_text_blocks(tmp2_path)
-    changes = comparer.analyze_semantic_changes(original_blocks, modified_blocks)
-    comparer.highlight_changes_in_pdf(tmp2_path, changes, output_path)
-    comparer.generate_change_summary(changes, summary_path)
+    comparer = EnhancedPDFComparer()
+    comparer.compare_pdfs(tmp1_path, tmp2_path, output_path, summary_path)
 
     # Read results into session state
     with open(output_path, "rb") as file:
