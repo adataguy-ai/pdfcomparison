@@ -44,34 +44,41 @@ def main():
 
         with col1:
             st.write("Original PDF:")
+            st.download_button(
+                label="Download Original PDF",
+                data=st.session_state.original_pdf,
+                file_name="original.pdf",
+                mime="application/pdf",
+            )
             display_pdf(st.session_state.original_pdf)
 
         with col2:
             st.write("Annotated PDF:")
+
+            # Create two columns for download buttons
+            button_col1, button_col2 = st.columns(2)
+
+            with button_col1:
+                st.download_button(
+                    label="Download Annotated PDF",
+                    data=st.session_state.annotated_pdf,
+                    file_name="annotated_comparison.pdf",
+                    mime="application/pdf",
+                )
+
+            with button_col2:
+                st.download_button(
+                    label="Download Change Log",
+                    data=st.session_state.change_log,
+                    file_name="change_log.txt",
+                    mime="text/plain",
+                )
+
             display_pdf(st.session_state.annotated_pdf)
 
         # Display change summary
         st.write("Change Summary:")
         st.text_area("", st.session_state.change_log, height=300)
-
-        # Download options
-        st.subheader("Download Options")
-
-        # Download annotated PDF
-        st.download_button(
-            label="Download Annotated PDF",
-            data=st.session_state.annotated_pdf,
-            file_name="annotated_comparison.pdf",
-            mime="application/pdf",
-        )
-
-        # Download change log
-        st.download_button(
-            label="Download Change Log",
-            data=st.session_state.change_log,
-            file_name="change_log.txt",
-            mime="text/plain",
-        )
 
         # Option to start over
         if st.button("Start Over"):
@@ -120,7 +127,7 @@ def compare_pdfs(original_pdf, modified_pdf):
 
 def display_pdf(pdf_bytes):
     base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
-    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
+    pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf">'
     st.markdown(pdf_display, unsafe_allow_html=True)
 
 
