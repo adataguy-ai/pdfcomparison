@@ -6,6 +6,7 @@ from pdf_compare import EnhancedPDFComparer
 
 
 def main():
+    st.set_page_config(layout="wide")
     st.title("Enhanced PDF Comparison Tool")
 
     # Initialize session state
@@ -15,6 +16,8 @@ def main():
         st.session_state.annotated_pdf = None
     if "change_log" not in st.session_state:
         st.session_state.change_log = None
+    if "original_pdf" not in st.session_state:
+        st.session_state.original_pdf = None
 
     # Check if comparison has been done
     if not st.session_state.comparison_done:
@@ -36,9 +39,16 @@ def main():
         # Display results
         st.subheader("Comparison Results")
 
-        # Display annotated PDF
-        st.write("Annotated PDF:")
-        display_pdf(st.session_state.annotated_pdf)
+        # Create two columns for side-by-side display
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.write("Original PDF:")
+            display_pdf(st.session_state.original_pdf)
+
+        with col2:
+            st.write("Annotated PDF:")
+            display_pdf(st.session_state.annotated_pdf)
 
         # Display change summary
         st.write("Change Summary:")
@@ -68,6 +78,7 @@ def main():
             st.session_state.comparison_done = False
             st.session_state.annotated_pdf = None
             st.session_state.change_log = None
+            st.session_state.original_pdf = None
             st.rerun()
 
 
@@ -97,6 +108,8 @@ def compare_pdfs(original_pdf, modified_pdf):
         st.session_state.annotated_pdf = file.read()
     with open(summary_path, "r") as file:
         st.session_state.change_log = file.read()
+    with open(tmp1_path, "rb") as file:
+        st.session_state.original_pdf = file.read()
 
     # Clean up temporary files
     os.unlink(tmp1_path)
@@ -107,7 +120,7 @@ def compare_pdfs(original_pdf, modified_pdf):
 
 def display_pdf(pdf_bytes):
     base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
-    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
+    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
     st.markdown(pdf_display, unsafe_allow_html=True)
 
 
