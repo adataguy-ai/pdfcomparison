@@ -50,7 +50,7 @@ def main():
                 file_name="original.pdf",
                 mime="application/pdf",
             )
-            display_pdf(st.session_state.original_pdf)
+            display_pdf(st.session_state.original_pdf, "Original PDF Viewer")
 
         with col2:
             st.write("Annotated PDF:")
@@ -74,11 +74,11 @@ def main():
                     mime="text/plain",
                 )
 
-            display_pdf(st.session_state.annotated_pdf)
+            display_pdf(st.session_state.annotated_pdf, "Annotated PDF Viewer")
 
         # Display change summary
         st.write("Change Summary:")
-        st.text_area("", st.session_state.change_log, height=300)
+        st.text_area("Change Log", value=st.session_state.change_log, height=300)
 
         # Option to start over
         if st.button("Start Over"):
@@ -125,10 +125,13 @@ def compare_pdfs(original_pdf, modified_pdf):
     os.unlink(summary_path)
 
 
-def display_pdf(pdf_bytes):
+def display_pdf(pdf_bytes, label):
+    # Encode PDF to base64
     base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
-    pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf">'
-    st.markdown(pdf_display, unsafe_allow_html=True)
+
+    # Embedding PDF in HTML
+    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
+    st.markdown(f"<p>{label}</p>{pdf_display}", unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
