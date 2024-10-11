@@ -3,11 +3,13 @@ from typing import List, Tuple, Dict, Optional
 import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModel, Pipeline, pipeline
+from transformers import logging as transformers_logging
 import fitz
 import spacy
 from collections import Counter
 import re
 from sklearn.metrics.pairwise import cosine_similarity
+import warnings
 
 
 @dataclass
@@ -31,6 +33,11 @@ class TextBlock:
         return hash((self.normalized_text, self.page_num))
 
 
+# Set global configuration for Transformers
+transformers_logging.set_verbosity_error()  # Suppress non-error messages
+warnings.filterwarnings("ignore", category=FutureWarning)
+
+
 class EnhancedPDFComparer:
     def __init__(
         self,
@@ -39,7 +46,11 @@ class EnhancedPDFComparer:
         similarity_threshold: float = 0.95,
         context_window: int = 3,
     ):
-        self.tokenizer = AutoTokenizer.from_pretrained(embedding_model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            embedding_model_name,
+            clean_up_tokenization_spaces=True,
+            use_fast=True,  # Add this line
+        )
         self.model = AutoModel.from_pretrained(embedding_model_name)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
