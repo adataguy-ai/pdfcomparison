@@ -324,6 +324,10 @@ class EnhancedPDFComparer:
             f.write("PDF Comparison Summary\n")
             f.write("=====================\n\n")
 
+            if not changes:
+                f.write("No changes detected between the PDFs.\n")
+                return
+
             change_counts = Counter(change["type"] for change in changes)
             f.write("Overall Changes:\n")
             f.write(f"Total changes: {len(changes)}\n")
@@ -370,7 +374,14 @@ class EnhancedPDFComparer:
 
         changes = self.analyze_changes(original_blocks, modified_blocks)
 
-        self.highlight_changes_in_pdf(modified_pdf, changes, output_pdf)
+        if changes:
+            self.highlight_changes_in_pdf(modified_pdf, changes, output_pdf)
+        else:
+            # If no changes, just copy the modified PDF to the output
+            import shutil
+
+            shutil.copy2(modified_pdf, output_pdf)
+
         self.generate_change_summary(changes, summary_path)
 
         return changes
